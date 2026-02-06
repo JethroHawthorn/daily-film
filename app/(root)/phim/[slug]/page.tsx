@@ -10,6 +10,7 @@ import RelatedMovies from "@/components/movie/RelatedMovies";
 import ActionButtons from "@/components/movie/ActionButtons";
 import { Metadata } from 'next';
 import CommentSection from "@/components/comments/CommentSection";
+import MovieRating from "@/components/movie/MovieRating";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -87,6 +88,8 @@ export default async function MovieDetailPage(props: Props) {
                 movieSlug={movie.slug}
               />
             </div>
+
+            <MovieRating movieSlug={movie.slug} />
 
             <div className="flex flex-wrap gap-2">
               <Badge variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20">

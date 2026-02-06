@@ -3,6 +3,7 @@ import { getLatestMovies, OPHIM_IMAGE_URL } from "@/lib/ophim";
 import InfiniteMovieGrid from "@/components/movie/InfiniteMovieGrid";
 import ContinueWatching from "@/components/home/ContinueWatching";
 import TrendingSection from "@/components/home/TrendingSection";
+import TopRatedSection from "@/components/home/TopRatedSection";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -53,6 +54,7 @@ export default async function Home() {
       <div className="container py-8">
         <ContinueWatching />
         <TrendingSection />
+        <TopRatedSection />
         <InfiniteMovieGrid initialMovies={latestMovies} title="Phim Mới Cập Nhật" />
       </div>
     </div>
