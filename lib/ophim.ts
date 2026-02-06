@@ -45,7 +45,7 @@ export async function getMovieDetail(slug: string) {
       next: { revalidate: MOVIE_DETAIL_REVALIDATE },
     });
 
-    if (!res.ok) throw new Error("Failed to fetch movie detail");
+    if (!res.ok) throw new Error(`Failed to fetch movie detail: ${res.status} ${res.statusText}`);
 
     const data = await res.json();
 
@@ -61,7 +61,7 @@ export async function getMovieDetail(slug: string) {
       episodes,
     };
   } catch (error) {
-    console.error("getMovieDetail error:", error);
+    console.error(`getMovieDetail error for slug "${slug}":`, error);
     return null;
   }
 }

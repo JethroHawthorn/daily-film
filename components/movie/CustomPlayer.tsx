@@ -4,6 +4,12 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SkipForward, Maximize, Minimize } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { logMovieEvent } from "@/app/actions/analytics";
 
@@ -119,22 +125,41 @@ export default function CustomPlayer({
           title={`Xem phim ${movieSlug}`}
         />
 
-        {/* Overlays - Top Right */}
+        {/* Overlays - Bottom Right */}
         <div className={cn(
-          "absolute top-4 right-4 z-10 flex gap-2 transition-opacity duration-300",
+          "absolute bottom-1 right-40 transition-opacity duration-300",
           isFullscreen
             ? (showControls ? "opacity-100" : "opacity-0")
             : "opacity-0 group-hover:opacity-100"
         )}>
           {nextEpisodeSlug && (
-            <Button onClick={handleNext} variant="secondary" size="sm" className="bg-black/50 hover:bg-black/70 text-white backdrop-blur border border-white/10 shadow-md">
-              Tập tiếp theo <SkipForward className="ml-2 h-4 w-4" />
-            </Button>
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={handleNext} variant="ghost" size="icon">
+                    <SkipForward className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Tập tiếp theo</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
-
-          <Button onClick={toggleFullscreen} variant="secondary" size="icon" className="h-9 w-9 bg-black/50 hover:bg-black/70 text-white backdrop-blur border border-white/10 shadow-md">
-            {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
-          </Button>
+        </div>
+        <div className="absolute bottom-1 right-[15px] z-10">
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={toggleFullscreen} variant="ghost" size="icon">
+                  {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Thu phóng</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
 
@@ -145,6 +170,6 @@ export default function CustomPlayer({
           Nếu không xem được, hãy thử đổi Server khác hoặc reload lại trang.
         </span>
       </div>
-    </div>
+    </div >
   );
 }
