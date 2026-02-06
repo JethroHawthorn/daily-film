@@ -10,10 +10,10 @@ export async function registerUsername(username: string) {
     const normalized = username.trim().toLowerCase();
     
     if (normalized.length < 3 || normalized.length > 20) {
-        return { error: "Username must be 3-20 characters" };
+        return { error: "Tên người dùng phải từ 3-20 ký tự" };
     }
     if (!/^[a-z0-9_]+$/.test(normalized)) {
-        return { error: "Only letters, numbers, and underscores allowed" };
+        return { error: "Chỉ cho phép chữ thường, số và dấu gạch dưới" };
     }
 
     // Check if exists
@@ -23,7 +23,7 @@ export async function registerUsername(username: string) {
     });
     
     if (existing.rows.length > 0) {
-        return { error: "Username already taken" };
+        return { error: "Tên đã tồn tại" };
     }
 
     await db.execute({
@@ -34,7 +34,7 @@ export async function registerUsername(username: string) {
     return { success: true, username: normalized };
   } catch (error) {
     console.error("registerUsername error:", error);
-    return { error: "Server error" };
+    return { error: "Lỗi máy chủ" };
   }
 }
 

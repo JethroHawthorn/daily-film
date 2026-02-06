@@ -15,9 +15,11 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="container flex flex-col items-center justify-center min-h-[50vh] space-y-4">
-      <h2 className="text-2xl font-bold">Đã có lỗi xảy ra!</h2>
-      <p className="text-muted-foreground">Không thể tải dữ liệu. Vui lòng thử lại.</p>
+    <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center gap-4 text-center">
+      <h2 className="text-2xl font-bold">Đã xảy ra lỗi!</h2>
+      <p className="text-muted-foreground">
+        Chúng tôi xin lỗi vì sự bất tiện này. Vui lòng thử lại.
+      </p>
       <Button onClick={() => reset()}>Thử lại</Button>
     </div>
   );

@@ -19,6 +19,20 @@ export async function logMovieEvent(username: string, movieSlug: string, eventTy
       args: [crypto.randomUUID(), movieSlug, eventType, Date.now()]
     });
 
+    // Increment view count for "play" events (or both? Let's count "play" as a view)
+    if (eventType === "play") {
+       await db.execute({
+          sql: `
+            INSERT INTO movie_views (movie_slug, view_count, updated_at)
+            VALUES (?, 1, ?)
+            ON CONFLICT(movie_slug) DO UPDATE SET
+            view_count = view_count + 1,
+            updated_at = excluded.updated_at
+          `,
+          args: [movieSlug, Date.now()]
+       });
+    }
+
     return { success: true };
   } catch (error) {
     console.error("logMovieEvent error:", error);
@@ -39,24 +53,21 @@ export interface TrendingMovie {
 export async function getTrendingMovies(window: 'day' | 'week' = 'day') {
   try {
     const now = Date.now();
-    const windowMs = window === 'day' ? 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
-    const since = now - windowMs;
+    // const windowMs = window === 'day' ? 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+    // const since = now - windowMs;
 
-    // Aggregation Query
-    // Score: Play = 1, Finish = 2
+    // Aggregation Query from movie_views (Much faster)
+    // Note: This is now "All Time Popular" effectively.
+    // If we wanted "Trending" (recent), we'd need a time-decay or daily table.
+    // For now, "Faster top 10" implies using the pre-aggregated counter.
     const result = await db.execute({
       sql: `
-        SELECT movie_slug, 
-               SUM(CASE WHEN event_type = 'play' THEN 1 
-                        WHEN event_type = 'finish' THEN 2 
-                        ELSE 0 END) as score
-        FROM movie_events
-        WHERE created_at > ?
-        GROUP BY movie_slug
-        ORDER BY score DESC
+        SELECT movie_slug, view_count as score
+        FROM movie_views
+        ORDER BY view_count DESC
         LIMIT 10
       `,
-      args: [since]
+      args: []
     });
 
     const trendingList: TrendingMovie[] = result.rows.map(row => ({

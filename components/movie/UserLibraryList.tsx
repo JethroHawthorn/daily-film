@@ -41,7 +41,7 @@ export default function UserLibraryList({ type, emptyMessage }: UserLibraryListP
   if (!username) {
     return (
       <div className="text-center py-20 bg-muted/30 rounded-lg">
-        <p className="text-muted-foreground">Please log in to view your library.</p>
+        <p className="text-muted-foreground">Vui lòng chọn tên người dùng để xem tủ phim.</p>
       </div>
     );
   }
@@ -49,7 +49,7 @@ export default function UserLibraryList({ type, emptyMessage }: UserLibraryListP
   if (movies.length === 0) {
     return (
       <div className="text-center py-20 bg-muted/30 rounded-lg">
-        <p className="text-muted-foreground">{emptyMessage}</p>
+        <p className="text-muted-foreground">Vui lòng chọn tên người dùng để xem tủ phim.</p>
       </div>
     );
   }
