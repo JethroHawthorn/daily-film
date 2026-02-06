@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SkipForward, Maximize, Minimize } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { logMovieEvent } from "@/app/actions/analytics";
 
 interface CustomPlayerProps {
   hlsUrl?: string; // Kept for compatibility but unused
@@ -38,11 +39,18 @@ export default function CustomPlayer({
     };
 
     document.addEventListener("fullscreenchange", onFullscreenChange);
+
+    // Log 'play' event after 30 seconds
+    const timer = setTimeout(() => {
+      logMovieEvent(movieSlug, "play").catch(err => console.error("Event log failed", err));
+    }, 30000);
+
     return () => {
       document.removeEventListener("fullscreenchange", onFullscreenChange);
       if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+      clearTimeout(timer);
     };
-  }, []);
+  }, [movieSlug]);
 
   const handleInteraction = () => {
     if (!isFullscreen) return;

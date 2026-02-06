@@ -3,19 +3,23 @@
  */
 
 export const MOVIE_CATEGORY_SLUGS = [
-  "phim-moi",
-  "phim-bo",
-  "phim-le",
-  "tv-shows",
-  "hoat-hinh",
-  "phim-vietsub",
-  "phim-thuyet-minh",
-  "phim-long-tieng",
-  "phim-bo-dang-chieu",
-  "phim-bo-hoan-thanh",
-  "phim-sap-chieu",
-  "subteam",
-  "phim-chieu-rap",
+  "hanh-dong",
+  "tinh-cam",
+  "hai-huoc",
+  "co-trang",
+  "tam-ly",
+  "hinh-su",
+  "chien-tranh",
+  "the-thao",
+  "vo-thuat",
+  "vien-tuong",
+  "kinh-di",
+  "tai-lieu",
+  "bi-an",
+  "hoc-duong",
+  "gia-dinh",
+  // "hoat-hinh", // Removed as it returns empty
+  "am-nhac",
 ] as const;
 
 /**
@@ -27,19 +31,22 @@ export type MovieCategorySlug = (typeof MOVIE_CATEGORY_SLUGS)[number];
  * Movie category labels (Vietnamese)
  */
 export const MOVIE_CATEGORY_LABELS: Record<MovieCategorySlug, string> = {
-  "phim-moi": "Phim Mới",
-  "phim-bo": "Phim Bộ",
-  "phim-le": "Phim Lẻ",
-  "tv-shows": "TV Shows",
-  "hoat-hinh": "Hoạt Hình",
-  "phim-vietsub": "Phim Vietsub",
-  "phim-thuyet-minh": "Phim Thuyết Minh",
-  "phim-long-tieng": "Phim Lồng Tiếng",
-  "phim-bo-dang-chieu": "Phim Bộ Đang Chiếu",
-  "phim-bo-hoan-thanh": "Phim Bộ Hoàn Thành",
-  "phim-sap-chieu": "Phim Sắp Chiếu",
-  subteam: "Subteam",
-  "phim-chieu-rap": "Phim Chiếu Rạp",
+  "hanh-dong": "Hành Động",
+  "tinh-cam": "Tình Cảm",
+  "hai-huoc": "Hài Hước",
+  "co-trang": "Cổ Trang",
+  "tam-ly": "Tâm Lý",
+  "hinh-su": "Hình Sự",
+  "chien-tranh": "Chiến Tranh",
+  "the-thao": "Thể Thao",
+  "vo-thuat": "Võ Thuật",
+  "vien-tuong": "Viễn Tưởng",
+  "kinh-di": "Kinh Dị",
+  "tai-lieu": "Tài Liệu",
+  "bi-an": "Bí Ẩn",
+  "hoc-duong": "Học Đường",
+  "gia-dinh": "Gia Đình",
+  "am-nhac": "Âm Nhạc",
 };
 
 /**
