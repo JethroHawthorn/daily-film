@@ -1,6 +1,6 @@
 import { getLatestMovies, OPHIM_IMAGE_URL } from "@/lib/ophim";
 import { getContinueWatching } from "@/app/actions/history";
-import MovieGrid from "@/components/movie/MovieGrid";
+import InfiniteMovieGrid from "@/components/movie/InfiniteMovieGrid";
 import ContinueWatching from "@/components/home/ContinueWatching";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -54,7 +54,7 @@ export default async function Home() {
       {/* Content */}
       <div className="container py-8">
         <ContinueWatching initialData={watchHistory} />
-        <MovieGrid movies={latestMovies} title="Phim Mới Cập Nhật" />
+        <InfiniteMovieGrid initialMovies={latestMovies} title="Phim Mới Cập Nhật" />
       </div>
     </div>
   );
