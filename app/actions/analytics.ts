@@ -2,7 +2,6 @@
 
 import { db } from "@/lib/db";
 import { getMovieDetail } from "@/lib/ophim";
-import { revalidatePath } from "next/cache";
 
 /**
  * Log a movie event (play / finish)
@@ -43,6 +42,7 @@ export async function logMovieEvent(username: string, movieSlug: string, eventTy
 export interface TrendingMovie {
   movieSlug: string;
   score: number;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   movieData?: any; // Populated from API
 }
 
@@ -50,9 +50,10 @@ export interface TrendingMovie {
  * Get trending movies based on window
  * window: 'day' (24h) | 'week' (7d)
  */
-export async function getTrendingMovies(window: 'day' | 'week' = 'day') {
+export async function getTrendingMovies(_window: 'day' | 'week' = 'day') {
   try {
-    const now = Date.now();
+    void _window; // Suppress unused variable warning
+    // const now = Date.now();
     // const windowMs = window === 'day' ? 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
     // const since = now - windowMs;
 
@@ -91,7 +92,7 @@ export async function getTrendingMovies(window: 'day' | 'week' = 'day') {
                 ...item,
                 movieData: data?.movie || null
             };
-        } catch (e) {
+        } catch {
             return { ...item, movieData: null };
         }
       })

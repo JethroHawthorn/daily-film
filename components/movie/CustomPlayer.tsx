@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SkipForward, Maximize, Minimize } from "lucide-react";
@@ -41,42 +41,11 @@ export default function CustomPlayer(props: CustomPlayerProps) {
   const { saveHistory } = useWatchHistory();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
+  }, []);
 
-    const onFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", onFullscreenChange);
-
-    // 1. Save to Watch History immediately (so it appears in "Continue Watching")
-    // Since we use an iframe, we can't track exact progress (currentTime), so we save 0.
-    saveHistory({
-      movieSlug,
-      movieTitle: props.movieTitle,
-      posterUrl: props.posterUrl,
-      episodeSlug: props.episodeSlug,
-      episodeName: props.episodeName,
-      currentTime: 0,
-      duration: 0,
-    }).catch(err => console.error("History save failed", err));
-
-    // 2. Log 'play' event after 30 seconds (Analytics)
-    const timer = setTimeout(() => {
-      const username = localStorage.getItem("username");
-      if (username) {
-        logMovieEvent(username, movieSlug, "play").catch(err => console.error("Event log failed", err));
-      }
-    }, 30000);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", onFullscreenChange);
-      if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-      clearTimeout(timer);
-    };
-  }, [movieSlug, props.episodeSlug, saveHistory]);
-
-  const handleInteraction = () => {
+  const handleInteraction = useCallback(() => {
     if (!isFullscreen) return;
 
     setShowControls(true);
@@ -88,17 +57,55 @@ export default function CustomPlayer(props: CustomPlayerProps) {
     controlsTimeoutRef.current = setTimeout(() => {
       setShowControls(false);
     }, 3000);
-  };
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    // 1. Save to Watch History immediately
+    saveHistory({
+      movieSlug,
+      movieTitle: props.movieTitle,
+      posterUrl: props.posterUrl,
+      episodeSlug: props.episodeSlug,
+      episodeName: props.episodeName,
+      currentTime: 0,
+      duration: 0,
+    }).catch(err => console.error("History save failed", err));
+
+    // 2. Log 'play' event after 30 seconds
+    const timer = setTimeout(() => {
+      const username = localStorage.getItem("username");
+      if (username) {
+        logMovieEvent(username, movieSlug, "play").catch(err => console.error("Event log failed", err));
+      }
+    }, 30000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [movieSlug, props.movieTitle, props.posterUrl, props.episodeSlug, props.episodeName, saveHistory]);
 
   // Reset interaction timer when entering fullscreen
   useEffect(() => {
     if (isFullscreen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       handleInteraction();
     } else {
       setShowControls(true);
       if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
     }
-  }, [isFullscreen]);
+  }, [isFullscreen, handleInteraction]);
 
   const handleNext = () => {
     if (nextEpisodeSlug) {

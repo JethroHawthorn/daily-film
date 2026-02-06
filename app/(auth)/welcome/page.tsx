@@ -36,7 +36,7 @@ export default function WelcomePage() {
         localStorage.setItem("username", res.username);
         router.push("/");
       }
-    } catch (err) {
+    } catch {
       setError("Đã xảy ra lỗi. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);

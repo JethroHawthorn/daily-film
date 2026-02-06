@@ -15,6 +15,7 @@ export default function UsernameGate({ children }: { children: React.ReactNode }
       // Redirect to welcome
       router.push("/welcome");
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAuthorized(true);
     }
   }, [router]);

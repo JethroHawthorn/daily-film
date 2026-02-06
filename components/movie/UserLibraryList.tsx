@@ -5,13 +5,14 @@ import { getUserLibraryWithDetails } from "@/app/actions/user";
 import MovieCard from "@/components/movie/MovieCard";
 import { Loader2 } from "lucide-react";
 
+import { Movie } from "@/types/movie";
+
 interface UserLibraryListProps {
   type: "favorites" | "follows";
-  emptyMessage: string;
 }
 
-export default function UserLibraryList({ type, emptyMessage }: UserLibraryListProps) {
-  const [movies, setMovies] = useState<any[]>([]);
+export default function UserLibraryList({ type }: UserLibraryListProps) {
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
 

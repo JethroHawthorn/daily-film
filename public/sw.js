@@ -22,10 +22,10 @@ self.addEventListener('notificationclick', function (event) {
 })
 
 // Install event - caching capability for offline can be added here
-self.addEventListener('install', (event) => {
+self.addEventListener('install', () => {
   console.log('Service Worker installed');
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', () => {
   console.log('Service Worker activated');
 });

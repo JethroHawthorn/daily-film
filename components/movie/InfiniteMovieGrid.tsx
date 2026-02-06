@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Movie } from "@/types/movie";
 import MovieCard from "./MovieCard";
 import { loadMoreMovies } from "@/app/actions/movie";
@@ -26,31 +26,7 @@ export default function InfiniteMovieGrid({
   // Keep track of loaded IDs to prevent duplicates if API is quirky
   const loadedIds = useRef(new Set(initialMovies.map(m => m._id)));
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        if (target.isIntersecting && hasMore && !isLoading) {
-          loadNextPage();
-        }
-      },
-      {
-        root: null,
-        rootMargin: "200px", // Preload before reaching bottom
-        threshold: 0.1
-      }
-    );
-
-    if (loadingRef.current) {
-      observer.observe(loadingRef.current);
-    }
-
-    return () => {
-      if (loadingRef.current) observer.unobserve(loadingRef.current);
-    };
-  }, [hasMore, isLoading, page]);
-
-  const loadNextPage = async () => {
+  const loadNextPage = useCallback(async () => {
     setIsLoading(true);
     try {
       const nextPage = page + 1;
@@ -81,7 +57,32 @@ export default function InfiniteMovieGrid({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && hasMore && !isLoading) {
+          loadNextPage();
+        }
+      },
+      {
+        root: null,
+        rootMargin: "200px", // Preload before reaching bottom
+        threshold: 0.1
+      }
+    );
+
+    const currentTarget = loadingRef.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) observer.unobserve(currentTarget);
+    };
+  }, [hasMore, isLoading, loadNextPage]);
 
   return (
     <section className="py-8">
