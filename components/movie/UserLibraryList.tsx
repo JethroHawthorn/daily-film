@@ -38,18 +38,10 @@ export default function UserLibraryList({ type, emptyMessage }: UserLibraryListP
     );
   }
 
-  if (!username) {
-    return (
-      <div className="text-center py-20 bg-muted/30 rounded-lg">
-        <p className="text-muted-foreground">Vui lòng chọn tên người dùng để xem tủ phim.</p>
-      </div>
-    );
-  }
-
   if (movies.length === 0) {
     return (
       <div className="text-center py-20 bg-muted/30 rounded-lg">
-        <p className="text-muted-foreground">Vui lòng chọn tên người dùng để xem tủ phim.</p>
+        <p className="text-muted-foreground">Chưa có phim.</p>
       </div>
     );
   }
