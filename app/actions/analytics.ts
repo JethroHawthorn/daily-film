@@ -1,24 +1,18 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { getAnonymousId } from "@/lib/auth";
 import { getMovieDetail } from "@/lib/ophim";
 import { revalidatePath } from "next/cache";
 
 /**
  * Log a movie event (play / finish)
  */
-export async function logMovieEvent(movieSlug: string, eventType: "play" | "finish") {
+export async function logMovieEvent(username: string, movieSlug: string, eventType: "play" | "finish") {
   try {
-    const userId = await getAnonymousId();
-    if (!userId) return { success: false };
+    if (!username) return { success: false };
 
-    const eventId = `${userId}-${movieSlug}-${eventType}-${new Date().toISOString().slice(0, 13)}`; // simple dedupe by hour
-
-    // Check recent duplicate to prevent spam
-    // For simplicity in SQLite/Turso, we can just insert and ignore, or check first.
-    // Let's rely on application logic delay.
-    // Ideally we'd have a composite key or a unique constraint, but for now just Insert.
+    // Simple dedupe by hour using username
+    // const eventId = `${username}-${movieSlug}-${eventType}-${new Date().toISOString().slice(0, 13)}`; 
 
     await db.execute({
       sql: `INSERT INTO movie_events (id, movie_slug, event_type, created_at) VALUES (?, ?, ?, ?)`,

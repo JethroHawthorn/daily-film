@@ -1,12 +1,12 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { getAnonymousId, getOrCreateAnonymousId } from "@/lib/auth";
 import { WatchHistoryItem } from "@/types/history";
 import { revalidatePath } from "next/cache";
 
 // Type matches payload from Player
 export interface WatchProgressInput {
+  username: string; // Added username
   movieSlug: string;
   movieTitle: string;
   posterUrl: string;
@@ -18,26 +18,22 @@ export interface WatchProgressInput {
 
 export async function saveWatchProgress(data: WatchProgressInput) {
   try {
-    const userId = await getOrCreateAnonymousId();
+    const { username } = data;
+    if (!username) return { success: false };
     
     // Ensure user exists (idempotent ignore)
-    // We could do INSERT OR IGNORE, but Turso/SQLite upsert for user might be overkill if we just assume.
-    // However, FK constraint requires user to exist. 
-    // Let's optimize: try insert user if not exists first.
-    
-    // Check if user exists or just insert ignore
+    // We expect user to be registered at /welcome, but safer to check/insert if missing?
+    // Actually, simple constraint: INSERT OR IGNORE if we strictly trusting client.
     await db.execute({
-        sql: `INSERT OR IGNORE INTO users (id, created_at) VALUES (?, ?)`,
-        args: [userId, Date.now()]
+        sql: `INSERT OR IGNORE INTO users (username, created_at) VALUES (?, ?)`,
+        args: [username, Date.now()]
     });
 
     const now = Date.now();
     
-    // Upsert progress
-    // If finished (progress > 95% and duration > 0), remove it?
-    // User requested: "Remove when finished (>= 95%)"
+    // If finished (progress > 95%), remove it?
     if (data.duration && data.duration > 0 && (data.currentTime / data.duration) >= 0.95) {
-        await removeWatchProgress(data.movieSlug);
+        await removeWatchProgress(username, data.movieSlug);
         return { success: true, removed: true };
     }
 
@@ -54,7 +50,7 @@ export async function saveWatchProgress(data: WatchProgressInput) {
           episode_name = excluded.episode_name
       `,
       args: [
-        userId,
+        username,
         data.movieSlug,
         data.episodeSlug,
         data.currentTime,
@@ -66,19 +62,17 @@ export async function saveWatchProgress(data: WatchProgressInput) {
       ]
     });
 
-    revalidatePath("/"); // Update home page list
+    revalidatePath("/"); // Update home page
     return { success: true };
   } catch (error) {
     console.error("saveWatchProgress error:", error);
-    // Fail silently as requested for client, but return false for debug
     return { success: false };
   }
 }
 
-export async function getContinueWatching() {
+export async function getContinueWatching(username: string) {
   try {
-    const userId = await getAnonymousId();
-    if (!userId) return [];
+    if (!username) return [];
     
     const result = await db.execute({
       sql: `
@@ -88,7 +82,7 @@ export async function getContinueWatching() {
         ORDER BY updated_at DESC
         LIMIT 10
       `,
-      args: [userId]
+      args: [username]
     });
 
     return result.rows.map(row => ({
@@ -108,13 +102,12 @@ export async function getContinueWatching() {
   }
 }
 
-export async function removeWatchProgress(movieSlug: string) {
+export async function removeWatchProgress(username: string, movieSlug: string) {
     try {
-        const userId = await getAnonymousId();
-        if (!userId) return { success: true }; // No user, nothing to delete
+        if (!username) return { success: true };
         await db.execute({
             sql: "DELETE FROM watch_progress WHERE user_id = ? AND movie_slug = ?",
-            args: [userId, movieSlug]
+            args: [username, movieSlug]
         });
         revalidatePath("/");
         return { success: true };

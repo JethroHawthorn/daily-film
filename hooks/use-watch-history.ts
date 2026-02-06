@@ -23,6 +23,9 @@ export function useWatchHistory() {
 
   const saveHistory = useCallback(async (item: Omit<WatchHistoryItem, "updatedAt">) => {
     try {
+      const username = localStorage.getItem("username");
+      if (!username) return; // Cannot save without username
+
       const newItem: WatchHistoryItem = { ...item, updatedAt: Date.now() };
       
       // Optimistic update (Local Storage)
@@ -35,6 +38,7 @@ export function useWatchHistory() {
 
       // Server Sync (DB)
       await saveWatchProgress({
+        username,
         movieSlug: item.movieSlug,
         movieTitle: item.movieTitle,
         posterUrl: item.posterUrl,
@@ -50,6 +54,9 @@ export function useWatchHistory() {
 
   const removeFromHistory = useCallback(async (movieSlug: string) => {
      try {
+      const username = localStorage.getItem("username");
+      if (!username) return;
+
       // Optimistic update
       setHistory((prev) => {
         const updated = prev.filter((i) => i.movieSlug !== movieSlug);
@@ -58,7 +65,7 @@ export function useWatchHistory() {
       });
 
       // Server Sync
-      await removeWatchProgress(movieSlug);
+      await removeWatchProgress(username, movieSlug);
     } catch (e) {
       console.error("Failed to remove from history", e);
     }

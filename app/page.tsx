@@ -1,5 +1,5 @@
 import { getLatestMovies, OPHIM_IMAGE_URL } from "@/lib/ophim";
-import { getContinueWatching } from "@/app/actions/history";
+
 import InfiniteMovieGrid from "@/components/movie/InfiniteMovieGrid";
 import ContinueWatching from "@/components/home/ContinueWatching";
 import TrendingSection from "@/components/home/TrendingSection";
@@ -8,10 +8,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export default async function Home() {
-  const [{ items: latestMovies }, watchHistory] = await Promise.all([
-    getLatestMovies(1),
-    getContinueWatching()
-  ]);
+  const { items: latestMovies } = await getLatestMovies(1);
 
   // Featured movie (first one)
   const featured = latestMovies?.[0];
@@ -54,7 +51,7 @@ export default async function Home() {
 
       {/* Content */}
       <div className="container py-8">
-        <ContinueWatching initialData={watchHistory} />
+        <ContinueWatching />
         <TrendingSection />
         <InfiniteMovieGrid initialMovies={latestMovies} title="Phim Mới Cập Nhật" />
       </div>

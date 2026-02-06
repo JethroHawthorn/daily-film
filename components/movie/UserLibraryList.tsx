@@ -1,0 +1,64 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getUserLibraryWithDetails } from "@/app/actions/user";
+import MovieCard from "@/components/movie/MovieCard";
+import { Loader2 } from "lucide-react";
+
+interface UserLibraryListProps {
+  type: "favorites" | "follows";
+  emptyMessage: string;
+}
+
+export default function UserLibraryList({ type, emptyMessage }: UserLibraryListProps) {
+  const [movies, setMovies] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem("username");
+    setUsername(user);
+
+    const fetchData = async () => {
+      if (user) {
+        const data = await getUserLibraryWithDetails(user);
+        setMovies(type === "favorites" ? data.favorites : data.follows);
+      }
+      setIsLoading(false);
+    };
+
+    fetchData();
+  }, [type]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!username) {
+    return (
+      <div className="text-center py-20 bg-muted/30 rounded-lg">
+        <p className="text-muted-foreground">Please log in to view your library.</p>
+      </div>
+    );
+  }
+
+  if (movies.length === 0) {
+    return (
+      <div className="text-center py-20 bg-muted/30 rounded-lg">
+        <p className="text-muted-foreground">{emptyMessage}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      {movies.map((movie) => (
+        <MovieCard key={movie._id} movie={movie} />
+      ))}
+    </div>
+  );
+}

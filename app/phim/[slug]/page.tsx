@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import RelatedMovies from "@/components/movie/RelatedMovies";
 import ActionButtons from "@/components/movie/ActionButtons";
-import { getUserStats } from "@/app/actions/user";
 import { Metadata } from 'next';
 
 interface Props {
@@ -31,10 +30,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function MovieDetailPage(props: Props) {
   const params = await props.params;
-  const [data, stats] = await Promise.all([
-    getMovieDetail(params.slug),
-    getUserStats(params.slug)
-  ]);
+  const data = await getMovieDetail(params.slug);
 
   if (!data) return notFound();
 
@@ -88,8 +84,6 @@ export default async function MovieDetailPage(props: Props) {
               </div>
               <ActionButtons
                 movieSlug={movie.slug}
-                initialIsFavorite={stats.isFavorite}
-                initialIsFollowed={stats.isFollowed}
               />
             </div>
 

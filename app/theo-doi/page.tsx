@@ -1,6 +1,4 @@
-import { getUserLibrary } from "@/app/actions/user";
-import { getMovieDetail, OPHIM_IMAGE_URL } from "@/lib/ophim";
-import MovieCard from "@/components/movie/MovieCard";
+import UserLibraryList from "@/components/movie/UserLibraryList";
 import { Bell } from "lucide-react";
 import { Metadata } from "next";
 
@@ -9,23 +7,7 @@ export const metadata: Metadata = {
   description: "Danh sách phim bạn đang theo dõi",
 };
 
-export default async function FollowsPage() {
-  const { follows } = await getUserLibrary();
-
-  // Fetch movie data for each slug
-  const movies = await Promise.all(
-    follows.map(async (slug) => {
-      try {
-        const data = await getMovieDetail(slug);
-        return data?.movie;
-      } catch {
-        return null;
-      }
-    })
-  );
-
-  const validMovies = movies.filter((m) => m !== null && m !== undefined);
-
+export default function FollowsPage() {
   return (
     <div className="container py-8">
       <div className="flex items-center gap-2 mb-8">
@@ -33,17 +15,10 @@ export default async function FollowsPage() {
         <h1 className="text-2xl font-bold">Phim Đang Theo Dõi</h1>
       </div>
 
-      {validMovies.length === 0 ? (
-        <div className="text-center py-20 bg-muted/30 rounded-lg">
-          <p className="text-muted-foreground">Chưa có phim nào trong danh sách theo dõi.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-          {validMovies.map((movie) => (
-            <MovieCard key={movie!._id} movie={movie!} />
-          ))}
-        </div>
-      )}
+      <UserLibraryList
+        type="follows"
+        emptyMessage="Chưa có phim nào trong danh sách theo dõi."
+      />
     </div>
   );
 }

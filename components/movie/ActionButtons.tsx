@@ -1,33 +1,46 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Bell } from "lucide-react";
-import { toggleFavorite, toggleFollow } from "@/app/actions/user";
+import { Heart, Bell, Loader2 } from "lucide-react";
+import { toggleFavorite, toggleFollow, getUserStats } from "@/app/actions/user";
 import { cn } from "@/lib/utils";
 
 interface ActionButtonsProps {
   movieSlug: string;
-  initialIsFavorite: boolean;
-  initialIsFollowed: boolean;
 }
 
 export default function ActionButtons({
   movieSlug,
-  initialIsFavorite,
-  initialIsFollowed,
 }: ActionButtonsProps) {
-  const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
-  const [isFollowed, setIsFollowed] = useState(initialIsFollowed);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      const username = localStorage.getItem("username");
+      if (username) {
+        const stats = await getUserStats(username, movieSlug);
+        setIsFavorite(stats.isFavorite);
+        setIsFollowed(stats.isFollowed);
+      }
+      setIsLoading(false);
+    };
+    fetchStats();
+  }, [movieSlug]);
+
   const handleFavorite = () => {
+    const username = localStorage.getItem("username");
+    if (!username) return; // Should potentially redirect or alert? Assuming Gate handles most.
+
     // Optimistic update
     const nextState = !isFavorite;
     setIsFavorite(nextState);
 
     startTransition(async () => {
-      const result = await toggleFavorite(movieSlug);
+      const result = await toggleFavorite(username, movieSlug);
       if (result.error) {
         // Revert on error
         setIsFavorite(!nextState);
@@ -36,17 +49,33 @@ export default function ActionButtons({
   };
 
   const handleFollow = () => {
+    const username = localStorage.getItem("username");
+    if (!username) return;
+
     // Optimistic update
     const nextState = !isFollowed;
     setIsFollowed(nextState);
 
     startTransition(async () => {
-      const result = await toggleFollow(movieSlug);
+      const result = await toggleFollow(username, movieSlug);
       if (result.error) {
         setIsFollowed(!nextState);
       }
     });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" disabled>
+          <Loader2 className="h-4 w-4 animate-spin" />
+        </Button>
+        <Button variant="outline" size="sm" disabled>
+          <Loader2 className="h-4 w-4 animate-spin" />
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-2">

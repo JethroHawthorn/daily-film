@@ -42,7 +42,10 @@ export default function CustomPlayer({
 
     // Log 'play' event after 30 seconds
     const timer = setTimeout(() => {
-      logMovieEvent(movieSlug, "play").catch(err => console.error("Event log failed", err));
+      const username = localStorage.getItem("username");
+      if (username) {
+        logMovieEvent(username, movieSlug, "play").catch(err => console.error("Event log failed", err));
+      }
     }, 30000);
 
     return () => {
