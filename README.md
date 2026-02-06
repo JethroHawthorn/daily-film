@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 Daily Film
 
-## Getting Started
+A modern, high-performance movie streaming application built with Next.js 16, featuring a premium responsive design, seamless playback, and personalized watch history.
 
-First, run the development server:
+![Daily Film Banner](https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?q=80&w=2056&auto=format&fit=crop)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **🎥 Modern Streaming Experience**:
+  - **Infinite Scroll** Home Page for endless browsing.
+  - **Custom Player** wrapper for a seamless viewing experience.
+  - **Auto-Next Episode** suggestions.
+  - **Responsive Grid Layouts** optimized for Mobile and Desktop.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **💾 Smart Retention**:
+  - **Continue Watching**: Automatically tracks your progress (anonymous & database-backed).
+  - **Watch History**: Never lose your spot.
+  - **Related Movies**: Discover similar content instantly.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **⚡ Tech Excellence**:
+  - Built on **Next.js 16** (App Router & Server Actions).
+  - **Turso (LibSQL)** for edge-ready database performance.
+  - **Tailwind CSS** for sleek, dark-mode-first styling.
+  - **SSR & SEO Optimized** for maximum visibility.
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework**: [Next.js 16](https://nextjs.org/)
+- **Database**: [Turso (LibSQL)](https://turso.tech/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Deployment**: Vercel (Recommended)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Follow these steps to run the project locally.
 
-## Deploy on Vercel
+### Prerequisites
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Node.js 18+ installed.
+- A Turso database URL and Token.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Installation
+
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/JethroHawthorn/daily-film.git
+    cd daily-film
+    ```
+
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    # or
+    pnpm install
+    ```
+
+3.  **Configure Environment**:
+    Rename `env.example` to `.env` and fill in your keys:
+
+    ```env
+    TURSO_DATABASE_URL="libsql://your-db-url.turso.io"
+    TURSO_TOKEN="your-turso-token"
+    NEXT_PUBLIC_OPHIM_BASE_URL="https://ophim1.com"
+    NEXT_PUBLIC_OPHIM_IMAGE_URL="https://img.ophim1.com/uploads/movies"
+    ```
+
+4.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000) to start watching!
+
+## 📂 Project Structure
+
+- `app/`: Next.js App Router pages and layouts.
+- `components/`: Reusable UI components (Hero, Player, MovieGrid).
+- `lib/`: Utilities, Database client, and API helpers.
+- `types/`: TypeScript definitions for Movies and API responses.
+- `actions/`: Server Actions for data mutations (History, Pagination).
+
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a Pull Request.
+
+---
+
+Built with ❤️ by JethroHawthorn.
