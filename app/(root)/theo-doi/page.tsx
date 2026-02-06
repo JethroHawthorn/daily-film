@@ -17,7 +17,6 @@ export default function FollowsPage() {
 
       <UserLibraryList
         type="follows"
-        emptyMessage="Chưa có phim nào trong danh sách theo dõi."
       />
     </div>
   );

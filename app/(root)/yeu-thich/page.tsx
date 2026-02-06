@@ -17,7 +17,6 @@ export default function FavoritesPage() {
 
       <UserLibraryList
         type="favorites"
-        emptyMessage="Chưa có phim nào trong danh sách yêu thích."
       />
     </div>
   );
