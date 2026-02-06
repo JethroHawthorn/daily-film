@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { logMovieEvent } from "@/app/actions/analytics";
+import { useWatchHistory } from "@/hooks/use-watch-history";
 
 interface CustomPlayerProps {
   hlsUrl?: string; // Kept for compatibility but unused
@@ -25,17 +26,20 @@ interface CustomPlayerProps {
   initialTime?: number; // Kept for compatibility but unused
 }
 
-export default function CustomPlayer({
-  embedUrl,
-  movieSlug,
-  nextEpisodeSlug,
-}: CustomPlayerProps) {
+export default function CustomPlayer(props: CustomPlayerProps) {
+  const {
+    embedUrl,
+    movieSlug,
+    nextEpisodeSlug,
+  } = props;
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const controlsTimeoutRef = useRef<NodeJS.Timeout>(null);
+
+  const { saveHistory } = useWatchHistory();
 
   useEffect(() => {
     setMounted(true);
@@ -46,7 +50,19 @@ export default function CustomPlayer({
 
     document.addEventListener("fullscreenchange", onFullscreenChange);
 
-    // Log 'play' event after 30 seconds
+    // 1. Save to Watch History immediately (so it appears in "Continue Watching")
+    // Since we use an iframe, we can't track exact progress (currentTime), so we save 0.
+    saveHistory({
+      movieSlug,
+      movieTitle: props.movieTitle,
+      posterUrl: props.posterUrl,
+      episodeSlug: props.episodeSlug,
+      episodeName: props.episodeName,
+      currentTime: 0,
+      duration: 0,
+    }).catch(err => console.error("History save failed", err));
+
+    // 2. Log 'play' event after 30 seconds (Analytics)
     const timer = setTimeout(() => {
       const username = localStorage.getItem("username");
       if (username) {
@@ -59,7 +75,7 @@ export default function CustomPlayer({
       if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
       clearTimeout(timer);
     };
-  }, [movieSlug]);
+  }, [movieSlug, props.episodeSlug, saveHistory]);
 
   const handleInteraction = () => {
     if (!isFullscreen) return;

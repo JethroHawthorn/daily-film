@@ -1,6 +1,5 @@
 import { getMovieDetail } from "@/lib/ophim";
 import EpisodeList from "@/components/movie/EpisodeList";
-import Player from "@/components/movie/Player";
 import { notFound } from "next/navigation";
 import { Metadata } from 'next';
 import RelatedMovies from "@/components/movie/RelatedMovies";
