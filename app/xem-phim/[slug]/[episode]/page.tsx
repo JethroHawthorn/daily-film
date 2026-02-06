@@ -79,7 +79,7 @@ export default async function WatchPage(props: Props) {
 
           <div className="bg-muted/30 p-4 rounded-lg">
             <h2 className="font-semibold mb-2">Thông tin phim</h2>
-            <p className="text-sm text-muted-foreground line-clamp-3 hover:line-clamp-none transition-all">
+            <p className="text-sm text-muted-foreground">
               {movie.content?.replace(/<[^>]+>/g, '') || ''}
             </p>
           </div>

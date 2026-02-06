@@ -61,8 +61,8 @@ Follow these steps to run the project locally.
     ```env
     TURSO_DATABASE_URL="libsql://your-db-url.turso.io"
     TURSO_TOKEN="your-turso-token"
-    NEXT_PUBLIC_OPHIM_BASE_URL="https://ophim1.com"
-    NEXT_PUBLIC_OPHIM_IMAGE_URL="https://img.ophim1.com/uploads/movies"
+    NEXT_PUBLIC_OPHIM_BASE_URL=""
+    NEXT_PUBLIC_OPHIM_IMAGE_URL=""
     ```
 
 4.  **Run Development Server**:

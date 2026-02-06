@@ -1,7 +1,9 @@
 import { getMovieDetail, OPHIM_IMAGE_URL } from "@/lib/ophim";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import EpisodeList from "@/components/movie/EpisodeList";
+import JsonLd from "@/components/seo/JsonLd";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import RelatedMovies from "@/components/movie/RelatedMovies";
@@ -36,6 +38,7 @@ export default async function MovieDetailPage(props: Props) {
   // Clean content HTML potentially
   const content = movie.content.replace(/<p>&nbsp;<\/p>/g, '');
 
+
   const posterUrl = movie.poster_url.startsWith('http')
     ? movie.poster_url
     : `${OPHIM_IMAGE_URL}/${movie.poster_url}`;
@@ -46,6 +49,7 @@ export default async function MovieDetailPage(props: Props) {
 
   return (
     <div className="min-h-screen pb-12">
+      <JsonLd movie={movie} />
       {/* Backdrop */}
       <div className="relative h-[40vh] w-full overflow-hidden md:h-[50vh]">
         <div
@@ -82,8 +86,19 @@ export default async function MovieDetailPage(props: Props) {
               <Badge variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20">
                 {movie.lang}
               </Badge>
+              {movie.country?.map(c => (
+                <Link key={c.id} href={`/quoc-gia/${c.slug}`}>
+                  <Badge variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20 cursor-pointer">
+                    {c.name}
+                  </Badge>
+                </Link>
+              ))}
               {movie.category?.map(c => (
-                <Badge key={c.id} variant="secondary">{c.name}</Badge>
+                <Link key={c.id} href={`/the-loai/${c.slug}`}>
+                  <Badge variant="secondary" className="hover:bg-secondary/80 cursor-pointer">
+                    {c.name}
+                  </Badge>
+                </Link>
               ))}
             </div>
 
