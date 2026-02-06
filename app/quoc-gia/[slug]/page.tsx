@@ -1,8 +1,7 @@
 import { getMoviesByCountry } from "@/lib/ophim";
 import { COUNTRY_LABELS, type CountrySlug } from "@/lib/constants";
 import { Metadata } from "next";
-import { fetchMoreMoviesByCountry } from "@/app/actions/movies";
-import InfiniteMovieGrid from "@/components/movie/InfiniteMovieGrid";
+import CountryMovieGrid from "@/components/movie/CountryMovieGrid";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -26,13 +25,6 @@ export default async function CountryPage(props: Props) {
   const countryName = COUNTRY_LABELS[slug as CountrySlug] || slug;
 
   const { items, pagination } = await getMoviesByCountry(slug);
-  const totalPages = pagination?.totalPages || 1;
-
-  // Create bound server action for this specific country
-  async function fetchMore(page: number) {
-    "use server";
-    return fetchMoreMoviesByCountry(slug, page);
-  }
 
   return (
     <div className="container py-8">
@@ -45,11 +37,7 @@ export default async function CountryPage(props: Props) {
       )}
 
       {items.length > 0 ? (
-        <InfiniteMovieGrid
-          initialMovies={items}
-          totalPages={totalPages}
-          fetchMoreAction={fetchMore}
-        />
+        <CountryMovieGrid initialMovies={items} countrySlug={slug} />
       ) : (
         <p className="text-muted-foreground">Không tìm thấy phim nào.</p>
       )}

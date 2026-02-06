@@ -1,7 +1,6 @@
 import { searchMovies } from "@/lib/ophim";
 import { MOVIE_CATEGORY_LABELS, type MovieCategorySlug } from "@/lib/constants";
-import { fetchMoreSearchResults } from "@/app/actions/movies";
-import InfiniteMovieGrid from "@/components/movie/InfiniteMovieGrid";
+import SearchMovieGrid from "@/components/movie/SearchMovieGrid";
 
 interface Props {
   searchParams: Promise<{ keyword?: string }>;
@@ -16,13 +15,6 @@ export default async function SearchPage(props: Props) {
     MOVIE_CATEGORY_LABELS[keyword as MovieCategorySlug] || keyword;
 
   const { items, pagination } = await searchMovies(keyword);
-  const totalPages = pagination?.totalPages || 1;
-
-  // Create bound server action for this specific keyword
-  async function fetchMore(page: number) {
-    "use server";
-    return fetchMoreSearchResults(keyword, page);
-  }
 
   return (
     <div className="container py-8">
@@ -38,11 +30,7 @@ export default async function SearchPage(props: Props) {
       </div>
 
       {items.length > 0 ? (
-        <InfiniteMovieGrid
-          initialMovies={items}
-          totalPages={totalPages}
-          fetchMoreAction={fetchMore}
-        />
+        <SearchMovieGrid initialMovies={items} keyword={keyword} />
       ) : (
         <p className="text-muted-foreground">Không tìm thấy phim nào.</p>
       )}
