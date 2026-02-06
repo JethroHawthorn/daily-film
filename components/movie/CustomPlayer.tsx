@@ -143,10 +143,10 @@ export default function CustomPlayer(props: CustomPlayerProps) {
 
         {/* Overlays - Bottom Right */}
         <div className={cn(
-          "absolute bottom-1 right-40 transition-opacity duration-300",
+          "absolute bottom-0 right-28 sm:bottom-1 sm:right-40 transition-opacity duration-300",
           isFullscreen
             ? (showControls ? "opacity-100" : "opacity-0")
-            : "opacity-0 group-hover:opacity-100"
+            : "opacity-100"
         )}>
           {nextEpisodeSlug && (
             <TooltipProvider delayDuration={0}>
@@ -163,7 +163,7 @@ export default function CustomPlayer(props: CustomPlayerProps) {
             </TooltipProvider>
           )}
         </div>
-        <div className="absolute bottom-1 right-[15px] z-10">
+        <div className="absolute bottom-0 right-0 sm:bottom-1 sm:right-[15px] z-10">
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
