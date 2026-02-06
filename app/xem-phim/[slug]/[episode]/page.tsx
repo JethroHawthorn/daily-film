@@ -86,11 +86,13 @@ export default async function WatchPage(props: Props) {
 
           <div className="lg:hidden">
             <h3 className="font-semibold leading-none tracking-tight mb-4">Danh sách tập</h3>
-            <EpisodeList
-              episodes={episodes}
-              currentEpisodeSlug={params.episode}
-              movieSlug={movie.slug}
-            />
+            <div className="max-h-48 overflow-y-auto pr-2">
+              <EpisodeList
+                episodes={episodes}
+                currentEpisodeSlug={params.episode}
+                movieSlug={movie.slug}
+              />
+            </div>
           </div>
 
           <RelatedMovies movie={movie} />
@@ -100,11 +102,13 @@ export default async function WatchPage(props: Props) {
           <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
             <div className="p-6">
               <h3 className="font-semibold leading-none tracking-tight mb-4">Danh sách tập</h3>
-              <EpisodeList
-                episodes={episodes}
-                currentEpisodeSlug={params.episode}
-                movieSlug={movie.slug}
-              />
+              <div className="max-h-48 overflow-y-auto pr-2">
+                <EpisodeList
+                  episodes={episodes}
+                  currentEpisodeSlug={params.episode}
+                  movieSlug={movie.slug}
+                />
+              </div>
             </div>
           </div>
         </div>

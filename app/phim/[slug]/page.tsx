@@ -110,7 +110,9 @@ export default async function MovieDetailPage(props: Props) {
           <Card className="bg-card/50 backdrop-blur">
             <CardContent className="p-6">
               <h3 className="mb-4 text-xl font-bold">Danh sách tập</h3>
-              <EpisodeList episodes={episodes} movieSlug={movie.slug} />
+              <div className="max-h-48 overflow-y-auto pr-2">
+                <EpisodeList episodes={episodes} movieSlug={movie.slug} />
+              </div>
             </CardContent>
           </Card>
         </div>
