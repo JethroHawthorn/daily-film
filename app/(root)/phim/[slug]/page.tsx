@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import RelatedMovies from "@/components/movie/RelatedMovies";
 import ActionButtons from "@/components/movie/ActionButtons";
 import { Metadata } from 'next';
+import CommentSection from "@/components/comments/CommentSection";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -139,6 +140,9 @@ export default async function MovieDetailPage(props: Props) {
             </CardContent>
           </Card>
         </div>
+
+        {/* Comments */}
+        <CommentSection movieSlug={movie.slug} />
 
         {/* Related Movies */}
         <RelatedMovies movie={movie} />

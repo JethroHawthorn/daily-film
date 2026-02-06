@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from 'next';
 import RelatedMovies from "@/components/movie/RelatedMovies";
 import CustomPlayer from "@/components/movie/CustomPlayer";
+import CommentSection from "@/components/comments/CommentSection";
 
 interface Props {
   params: Promise<{ slug: string; episode: string }>;
@@ -92,6 +93,8 @@ export default async function WatchPage(props: Props) {
                 movieSlug={movie.slug}
               />
             </div>
+
+            <CommentSection movieSlug={movie.slug} />
           </div>
 
           <RelatedMovies movie={movie} />
@@ -110,6 +113,8 @@ export default async function WatchPage(props: Props) {
               </div>
             </div>
           </div>
+
+          <CommentSection movieSlug={movie.slug} />
         </div>
       </div>
     </div>
