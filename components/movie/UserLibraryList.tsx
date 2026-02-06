@@ -13,11 +13,10 @@ interface UserLibraryListProps {
 export default function UserLibraryList({ type, emptyMessage }: UserLibraryListProps) {
   const [movies, setMovies] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [username, setUsername] = useState<string | null>(null);
+
 
   useEffect(() => {
     const user = localStorage.getItem("username");
-    setUsername(user);
 
     const fetchData = async () => {
       if (user) {

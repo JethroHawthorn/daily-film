@@ -30,7 +30,7 @@ export default async function SearchPage(props: Props) {
       </div>
 
       {items.length > 0 ? (
-        <SearchMovieGrid initialMovies={items} keyword={keyword} />
+        <SearchMovieGrid key={keyword} initialMovies={items} keyword={keyword} />
       ) : (
         <p className="text-muted-foreground">Không tìm thấy phim nào.</p>
       )}

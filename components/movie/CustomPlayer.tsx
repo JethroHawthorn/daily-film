@@ -7,7 +7,6 @@ import { SkipForward, Maximize, Minimize } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -143,39 +142,35 @@ export default function CustomPlayer(props: CustomPlayerProps) {
 
         {/* Overlays - Bottom Right */}
         <div className={cn(
-          "absolute bottom-0 right-28 sm:bottom-1 sm:right-40 transition-opacity duration-300",
+          "absolute hidden md:block md:bottom-1 md:right-40 transition-opacity duration-300",
           isFullscreen
             ? (showControls ? "opacity-100" : "opacity-0")
             : "opacity-100"
         )}>
           {nextEpisodeSlug && (
-            <TooltipProvider delayDuration={0}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button onClick={handleNext} variant="ghost" size="icon">
-                    <SkipForward className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Tập tiếp theo</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-        </div>
-        <div className="absolute bottom-0 right-0 sm:bottom-1 sm:right-[15px] z-10">
-          <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button onClick={toggleFullscreen} variant="ghost" size="icon">
-                  {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+                <Button onClick={handleNext} variant="ghost" size="icon">
+                  <SkipForward className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Thu phóng</p>
+                <p>Tập tiếp theo</p>
               </TooltipContent>
             </Tooltip>
-          </TooltipProvider>
+          )}
+        </div>
+        <div className="absolute hidden md:block md:bottom-1 md:right-[15px] z-10">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={toggleFullscreen} variant="ghost" size="icon">
+                {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Thu phóng</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
