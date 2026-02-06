@@ -1,22 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
-
-const PUBLIC_PATHS = ["/welcome"];
+import { useRouter } from "next/navigation";
 
 export default function UsernameGate({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    // Skip check on public paths
-    if (PUBLIC_PATHS.includes(pathname)) {
-      setAuthorized(true);
-      return;
-    }
-
     const username = localStorage.getItem("username");
 
     if (!username) {
@@ -25,16 +17,9 @@ export default function UsernameGate({ children }: { children: React.ReactNode }
     } else {
       setAuthorized(true);
     }
-  }, [pathname, router]);
+  }, [router]);
 
-  // Optional: Show loading state or nothing while checking
-  // For better UX, we might render children but redirect fast?
-  // Or strictly gate. Let's strictly gate for now to avoid flash of content.
-  // BUT: For SEO pages (Home, Movie Detail), we should probably ALLOW render but just disable features?
-  // User Scope: "SEO pages must still render normally... Gate only applies to interactive features"
-
-  // Revised Logic: Always render children. The Gate just redirects if needed, but doesn't block render.
-  // This ensures bots see content.
-
+  // Always render children to enable bot crawling / SEO
+  // The effect will handle the redirect if needed for users
   return <>{children}</>;
 }

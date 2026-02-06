@@ -1,0 +1,21 @@
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import UsernameGate from "@/components/auth/UsernameGate";
+
+export default function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <Header />
+      <main className="flex-1">
+        <UsernameGate>
+          {children}
+        </UsernameGate>
+      </main>
+      <Footer />
+    </>
+  );
+}

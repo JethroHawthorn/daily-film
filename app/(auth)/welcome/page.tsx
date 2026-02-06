@@ -37,7 +37,7 @@ export default function WelcomePage() {
         router.push("/");
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError("Đã xảy ra lỗi. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);
     }
@@ -48,17 +48,17 @@ export default function WelcomePage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md space-y-8 text-center">
-        <h1 className="text-4xl font-bold tracking-tight">Welcome to Daily Film</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Chào mừng đến với Daily&nbsp;Film</h1>
         <p className="text-muted-foreground">
-          Choose a username to start tracking your watch history, favorites, and follows.
+          Đặt tên để bắt đầu theo dõi lịch sử xem, phim yêu thích và đang theo dõi.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-left">
           <div className="space-y-2">
-            <label htmlFor="username" className="text-sm font-medium">Username</label>
+            <label htmlFor="username" className="text-sm font-medium">Tên người dùng</label>
             <Input
               id="username"
-              placeholder="Ex: jethro_filmbuff"
+              placeholder="Ví dụ: jethro_yeuphim"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               minLength={3}
@@ -69,13 +69,9 @@ export default function WelcomePage() {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Checking..." : "Start Watching"}
+            {isLoading ? "Đang kiểm tra..." : "Bắt đầu xem"}
           </Button>
         </form>
-
-        <p className="text-xs text-muted-foreground">
-          No password required. Your username is your identity on this device.
-        </p>
       </div>
     </div>
   );
