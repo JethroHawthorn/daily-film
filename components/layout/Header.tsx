@@ -67,6 +67,27 @@ export default function Header() {
                     </div>
                   </div>
 
+                  {/* Mobile Library Section */}
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-muted-foreground text-sm">Tủ Phim</h4>
+                    <div className="grid grid-cols-2 gap-2 pl-2">
+                      <Link
+                        href="/yeu-thich"
+                        onClick={() => setOpen(false)}
+                        className="text-sm hover:text-primary text-muted-foreground hover:underline flex items-center gap-2"
+                      >
+                        Yêu Thích
+                      </Link>
+                      <Link
+                        href="/theo-doi"
+                        onClick={() => setOpen(false)}
+                        className="text-sm hover:text-primary text-muted-foreground hover:underline flex items-center gap-2"
+                      >
+                        Theo Dõi
+                      </Link>
+                    </div>
+                  </div>
+
                   <div className="space-y-3">
                     <h4 className="font-medium text-muted-foreground text-sm">Quốc Gia</h4>
                     <div className="grid grid-cols-2 gap-2 pl-2">
@@ -156,6 +177,19 @@ export default function Header() {
               ))}
             </div>
           </div>
+
+          <Link
+            href="/yeu-thich"
+            className="transition-colors hover:text-foreground/80 text-foreground/60"
+          >
+            Yêu Thích
+          </Link>
+          <Link
+            href="/theo-doi"
+            className="transition-colors hover:text-foreground/80 text-foreground/60"
+          >
+            Theo Dõi
+          </Link>
         </div>
 
         {/* Search Input */}

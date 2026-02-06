@@ -7,6 +7,8 @@ import JsonLd from "@/components/seo/JsonLd";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import RelatedMovies from "@/components/movie/RelatedMovies";
+import ActionButtons from "@/components/movie/ActionButtons";
+import { getUserStats } from "@/app/actions/user";
 import { Metadata } from 'next';
 
 interface Props {
@@ -29,7 +31,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function MovieDetailPage(props: Props) {
   const params = await props.params;
-  const data = await getMovieDetail(params.slug);
+  const [data, stats] = await Promise.all([
+    getMovieDetail(params.slug),
+    getUserStats(params.slug)
+  ]);
 
   if (!data) return notFound();
 
@@ -77,7 +82,16 @@ export default async function MovieDetailPage(props: Props) {
           {/* Info */}
           <div className="flex flex-col gap-4 text-white">
             <h1 className="text-3xl font-bold md:text-5xl">{movie.name}</h1>
-            <h2 className="text-xl text-white/80">{movie.origin_name} ({movie.year})</h2>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl text-white/80">{movie.origin_name} ({movie.year})</h2>
+              </div>
+              <ActionButtons
+                movieSlug={movie.slug}
+                initialIsFavorite={stats.isFavorite}
+                initialIsFollowed={stats.isFollowed}
+              />
+            </div>
 
             <div className="flex flex-wrap gap-2">
               <Badge variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20">
