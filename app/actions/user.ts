@@ -7,13 +7,13 @@ import { db } from "@/lib/db";
  */
 export async function registerUsername(username: string) {
   try {
-    const normalized = username.trim().toLowerCase();
+    const normalized = username.trim();
     
-    if (normalized.length < 3 || normalized.length > 20) {
-        return { error: "Tên người dùng phải từ 3-20 ký tự" };
+    if (normalized.length < 3 || normalized.length > 50) {
+        return { error: "Tên người dùng phải từ 3-50 ký tự" };
     }
-    if (!/^[a-z0-9_]+$/.test(normalized)) {
-        return { error: "Chỉ cho phép chữ thường, số và dấu gạch dưới" };
+    if (!/^[a-zA-Z0-9_]+$/.test(normalized)) {
+        return { error: "Chỉ cho phép chữ, số và dấu gạch dưới" };
     }
 
     // Check if exists
