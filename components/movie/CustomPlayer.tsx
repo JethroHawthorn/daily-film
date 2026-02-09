@@ -143,16 +143,13 @@ export default function CustomPlayer(props: CustomPlayerProps) {
         <iframe
           src={embedUrl}
           className="absolute inset-0 h-full w-full border-0"
-          // allowFullScreen removed to force use of custom wrapper
+          allowFullScreen
           title={`Xem phim ${movieSlug}`}
         />
 
         {/* Overlays - Bottom Right */}
         <div className={cn(
-          "absolute hidden md:block md:bottom-1 md:right-40 transition-opacity duration-300",
-          isFullscreen
-            ? (showControls ? "opacity-100" : "opacity-0")
-            : "opacity-100"
+          "absolute bottom-0 right-28 md:bottom-1 md:right-40 transition-opacity duration-300 opacity-100"
         )}>
           {nextEpisodeSlug && (
             <Tooltip>
@@ -166,18 +163,6 @@ export default function CustomPlayer(props: CustomPlayerProps) {
               </TooltipContent>
             </Tooltip>
           )}
-        </div>
-        <div className="absolute hidden md:block md:bottom-1 md:right-[15px] z-10">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button onClick={toggleFullscreen} variant="ghost" size="icon">
-                {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Thu phóng</p>
-            </TooltipContent>
-          </Tooltip>
         </div>
       </div>
 
