@@ -22,14 +22,12 @@ export async function registerUsername(username: string) {
         args: [normalized]
     });
     
-    if (existing.rows.length > 0) {
-        return { error: "Tên đã tồn tại" };
+    if (existing.rows.length === 0) {
+        await db.execute({
+            sql: "INSERT INTO users (username, created_at) VALUES (?, ?)",
+            args: [normalized, Date.now()]
+        });
     }
-
-    await db.execute({
-        sql: "INSERT INTO users (username, created_at) VALUES (?, ?)",
-        args: [normalized, Date.now()]
-    });
 
     return { success: true, username: normalized };
   } catch (error) {
