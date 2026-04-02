@@ -1,6 +1,5 @@
 import { getMovieDetail, OPHIM_IMAGE_URL } from "@/lib/ophim";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import EpisodeList from "@/components/movie/EpisodeList";
 import JsonLd from "@/components/seo/JsonLd";
@@ -11,6 +10,7 @@ import ActionButtons from "@/components/movie/ActionButtons";
 import { Metadata } from 'next';
 import CommentSection from "@/components/comments/CommentSection";
 import MovieRating from "@/components/movie/MovieRating";
+import RemoteImage from "@/components/shared/RemoteImage";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -55,12 +55,15 @@ export default async function MovieDetailPage(props: Props) {
       <JsonLd movie={movie} />
       {/* Backdrop */}
       <div className="relative h-[40vh] w-full overflow-hidden md:h-[50vh]">
-        <div
-          className="absolute inset-0 bg-cover bg-center blur-sm"
-          style={{ backgroundImage: `url(${posterUrl})` }}
-        >
-          <div className="absolute inset-0 bg-black/60" />
-        </div>
+        <RemoteImage
+          src={posterUrl}
+          alt={`${movie.name} backdrop`}
+          fill
+          priority
+          sizes="100vw"
+          className="scale-105 object-cover blur-sm"
+        />
+        <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
       </div>
 
@@ -68,12 +71,13 @@ export default async function MovieDetailPage(props: Props) {
         <div className="grid gap-8 md:grid-cols-[300px_1fr]">
           {/* Poster */}
           <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl shadow-2xl">
-            <Image
+            <RemoteImage
               src={thumbUrl}
               alt={movie.name}
               fill
               className="object-cover"
               priority
+              sizes="(max-width: 768px) 100vw, 300px"
             />
           </div>
 

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PlayCircle } from "lucide-react";
 import { Movie } from "@/types/movie";
 import { OPHIM_IMAGE_URL } from "@/lib/ophim";
+import RemoteImage from "@/components/shared/RemoteImage";
 
 
 interface MovieCardProps {
@@ -25,7 +25,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
     <Link href={`/phim/${movie.slug}`}>
       <Card className="group relative overflow-hidden border-none bg-transparent transition-all hover:scale-105 rounded-lg">
         <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg">
-          <Image
+          <RemoteImage
             src={thumbUrl}
             alt={movie.name}
             fill

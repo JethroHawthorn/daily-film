@@ -2,11 +2,11 @@
 
 import { useWatchHistory } from "@/hooks/use-watch-history";
 import Link from "next/link";
-import Image from "next/image";
 import { OPHIM_IMAGE_URL } from "@/lib/ophim";
 import { PlayCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import RemoteImage from "@/components/shared/RemoteImage";
 
 import { WatchHistoryItem } from "@/types/history";
 
@@ -37,7 +37,7 @@ export default function ContinueWatching({ initialData = [] }: Props) {
               <Link href={`/xem-phim/${item.movieSlug}/${item.episodeSlug}`}>
                 <Card className="relative overflow-hidden border-none bg-transparent">
                   <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg">
-                    <Image
+                    <RemoteImage
                       src={posterUrl}
                       alt={item.movieTitle}
                       fill
