@@ -1,10 +1,13 @@
 import { getMoviesByCountry } from "@/lib/ophim";
 import { COUNTRY_LABELS, type CountrySlug } from "@/lib/constants";
 import { Metadata } from "next";
-import CountryMovieGrid from "@/components/movie/CountryMovieGrid";
+import MovieGrid from "@/components/movie/MovieGrid";
+import Pagination from "@/components/shared/Pagination";
+import { parsePageParam } from "@/lib/utils";
 
 interface Props {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -19,12 +22,14 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function CountryPage(props: Props) {
   const params = await props.params;
+  const searchParams = await props.searchParams;
   const { slug } = params;
+  const page = parsePageParam(searchParams.page);
 
   // Get country label for display
   const countryName = COUNTRY_LABELS[slug as CountrySlug] || slug;
 
-  const { items, pagination } = await getMoviesByCountry(slug);
+  const { items, pagination } = await getMoviesByCountry(slug, page);
 
   return (
     <div className="container py-8">
@@ -37,7 +42,15 @@ export default async function CountryPage(props: Props) {
       )}
 
       {items.length > 0 ? (
-        <CountryMovieGrid initialMovies={items} countrySlug={slug} />
+        <>
+          <MovieGrid movies={items} />
+          {pagination && (
+            <Pagination
+              pagination={pagination}
+              baseUrl={`/quoc-gia/${slug}`}
+            />
+          )}
+        </>
       ) : (
         <p className="text-muted-foreground">Không tìm thấy phim nào.</p>
       )}

@@ -1,20 +1,23 @@
 import { searchMovies } from "@/lib/ophim";
 import { MOVIE_CATEGORY_LABELS, type MovieCategorySlug } from "@/lib/constants";
-import SearchMovieGrid from "@/components/movie/SearchMovieGrid";
+import MovieGrid from "@/components/movie/MovieGrid";
+import Pagination from "@/components/shared/Pagination";
+import { parsePageParam } from "@/lib/utils";
 
 interface Props {
-  searchParams: Promise<{ keyword?: string }>;
+  searchParams: Promise<{ keyword?: string; page?: string }>;
 }
 
 export default async function SearchPage(props: Props) {
   const searchParams = await props.searchParams;
   const keyword = searchParams.keyword || "";
+  const page = parsePageParam(searchParams.page);
 
   // Map slug to Vietnamese label, fallback to original keyword
   const displayKeyword =
     MOVIE_CATEGORY_LABELS[keyword as MovieCategorySlug] || keyword;
 
-  const { items, pagination } = await searchMovies(keyword);
+  const { items, pagination } = await searchMovies(keyword, page);
 
   return (
     <div className="container py-8">
@@ -30,7 +33,15 @@ export default async function SearchPage(props: Props) {
       </div>
 
       {items.length > 0 ? (
-        <SearchMovieGrid key={keyword} initialMovies={items} keyword={keyword} />
+        <>
+          <MovieGrid movies={items} />
+          {pagination && (
+            <Pagination
+              pagination={pagination}
+              baseUrl={`/tim-kiem?keyword=${encodeURIComponent(keyword)}`}
+            />
+          )}
+        </>
       ) : (
         <p className="text-muted-foreground">Không tìm thấy phim nào.</p>
       )}

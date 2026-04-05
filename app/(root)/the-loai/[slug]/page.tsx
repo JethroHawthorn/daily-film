@@ -1,9 +1,12 @@
 import { getMoviesByCategory } from "@/lib/ophim";
 import { Metadata } from "next";
-import InfiniteMovieGrid from "@/components/movie/InfiniteMovieGrid";
+import MovieGrid from "@/components/movie/MovieGrid";
+import Pagination from "@/components/shared/Pagination";
+import { parsePageParam } from "@/lib/utils";
 
 interface Props {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -23,17 +26,33 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function CategoryPage(props: Props) {
   const params = await props.params;
+  const searchParams = await props.searchParams;
   const { slug } = params;
+  const page = parsePageParam(searchParams.page);
   const title = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
-  const { items } = await getMoviesByCategory(slug);
+  const { items, pagination } = await getMoviesByCategory(slug, page);
 
   return (
     <div className="container py-8">
       <h1 className="text-2xl font-bold mb-6">Phim {title}</h1>
 
+      {pagination && (
+        <p className="text-muted-foreground mb-4">
+          Tổng cộng {pagination.totalItems.toLocaleString()} phim
+        </p>
+      )}
+
       {items.length > 0 ? (
-        <InfiniteMovieGrid initialMovies={items} title="" />
+        <>
+          <MovieGrid movies={items} />
+          {pagination && (
+            <Pagination
+              pagination={pagination}
+              baseUrl={`/the-loai/${slug}`}
+            />
+          )}
+        </>
       ) : (
         <p className="text-muted-foreground">Không tìm thấy phim nào trong thể loại này.</p>
       )}

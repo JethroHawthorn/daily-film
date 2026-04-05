@@ -11,53 +11,96 @@ interface PaginationProps {
 
 export default function Pagination({ pagination, baseUrl }: PaginationProps) {
   const { currentPage, totalPages } = pagination;
-
-  // Clean base URL to avoid double slashes or query param issues
-  // Assumes baseUrl is like "/danh-sach/phim-moi" or "/search?keyword=abc"
-  // For search, we need to append &page=. For path, ?page=
+  const previousPage = Math.max(1, currentPage - 1);
+  const nextPage = Math.min(totalPages, currentPage + 1);
 
   const getPageUrl = (page: number) => {
-    if (baseUrl.includes('?')) {
-      return `${baseUrl}&page=${page}`;
+    const [pathWithQuery, hash = ""] = baseUrl.split("#");
+    const hashSuffix = hash ? `#${hash}` : "";
+
+    if (pathWithQuery.includes("?")) {
+      return `${pathWithQuery}&page=${page}${hashSuffix}`;
     }
-    return `${baseUrl}?page=${page}`;
+
+    return `${pathWithQuery}?page=${page}${hashSuffix}`;
   };
 
   if (totalPages <= 1) return null;
 
+  const windowStart = Math.max(1, currentPage - 2);
+  const windowEnd = Math.min(totalPages, currentPage + 2);
+  const pages: number[] = [];
+
+  for (let page = windowStart; page <= windowEnd; page += 1) {
+    pages.push(page);
+  }
+
   return (
-    <div className="flex items-center justify-center space-x-2 py-8">
-      <Link href={getPageUrl(currentPage - 1)} passHref legacyBehavior>
-        <Button
-          variant="outline"
-          size="icon"
-          disabled={currentPage <= 1}
+    <nav
+      aria-label="Pagination"
+      className="flex flex-wrap items-center justify-center gap-2 py-8"
+    >
+      <Button variant="outline" size="icon" asChild>
+        <Link
+          href={getPageUrl(previousPage)}
+          aria-disabled={currentPage <= 1}
           aria-label="Previous Page"
-          asChild
+          tabIndex={currentPage <= 1 ? -1 : undefined}
+          className={cn(currentPage <= 1 && "pointer-events-none opacity-50")}
         >
-          <a aria-disabled={currentPage <= 1} className={cn(currentPage <= 1 && "pointer-events-none opacity-50")}>
-            <ChevronLeft className="h-4 w-4" />
-          </a>
+          <ChevronLeft className="h-4 w-4" />
+        </Link>
+      </Button>
+
+      {windowStart > 1 && (
+        <>
+          <Button variant={currentPage === 1 ? "default" : "outline"} size="sm" asChild>
+            <Link href={getPageUrl(1)}>
+              1
+            </Link>
+          </Button>
+          {windowStart > 2 && (
+            <span className="px-1 text-sm text-muted-foreground">...</span>
+          )}
+        </>
+      )}
+
+      {pages.map((page) => (
+        <Button key={page} variant={page === currentPage ? "default" : "outline"} size="sm" asChild>
+          <Link href={getPageUrl(page)}>
+            {page}
+          </Link>
         </Button>
-      </Link>
+      ))}
 
-      <div className="text-sm font-medium">
-        Trang {currentPage} / {totalPages}
-      </div>
+      {windowEnd < totalPages && (
+        <>
+          {windowEnd < totalPages - 1 && (
+            <span className="px-1 text-sm text-muted-foreground">...</span>
+          )}
+          <Button
+            variant={currentPage === totalPages ? "default" : "outline"}
+            size="sm"
+            asChild
+          >
+            <Link href={getPageUrl(totalPages)}>
+              {totalPages}
+            </Link>
+          </Button>
+        </>
+      )}
 
-      <Link href={getPageUrl(currentPage + 1)} passHref legacyBehavior>
-        <Button
-          variant="outline"
-          size="icon"
-          disabled={currentPage >= totalPages}
+      <Button variant="outline" size="icon" asChild>
+        <Link
+          href={getPageUrl(nextPage)}
+          aria-disabled={currentPage >= totalPages}
           aria-label="Next Page"
-          asChild
+          tabIndex={currentPage >= totalPages ? -1 : undefined}
+          className={cn(currentPage >= totalPages && "pointer-events-none opacity-50")}
         >
-          <a aria-disabled={currentPage >= totalPages} className={cn(currentPage >= totalPages && "pointer-events-none opacity-50")}>
-            <ChevronRight className="h-4 w-4" />
-          </a>
-        </Button>
-      </Link>
-    </div>
+          <ChevronRight className="h-4 w-4" />
+        </Link>
+      </Button>
+    </nav>
   );
 }

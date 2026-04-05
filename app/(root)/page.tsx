@@ -1,6 +1,5 @@
 import { getLatestMovies, OPHIM_IMAGE_URL } from "@/lib/ophim";
 
-import InfiniteMovieGrid from "@/components/movie/InfiniteMovieGrid";
 import ContinueWatching from "@/components/home/ContinueWatching";
 import TrendingSection from "@/components/home/TrendingSection";
 import TopRatedSection from "@/components/home/TopRatedSection";
@@ -8,9 +7,18 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import RemoteImage from "@/components/shared/RemoteImage";
+import MovieGrid from "@/components/movie/MovieGrid";
+import Pagination from "@/components/shared/Pagination";
+import { parsePageParam } from "@/lib/utils";
 
-export default async function Home() {
-  const { items: latestMovies } = await getLatestMovies(1);
+interface Props {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function Home(props: Props) {
+  const searchParams = await props.searchParams;
+  const page = parsePageParam(searchParams.page);
+  const { items: latestMovies, pagination } = await getLatestMovies(page);
 
   // Featured movie (first one)
   const featured = latestMovies?.[0];
@@ -60,7 +68,14 @@ export default async function Home() {
         <ContinueWatching />
         <TrendingSection />
         <TopRatedSection />
-        <InfiniteMovieGrid initialMovies={latestMovies} title="Phim Mới Cập Nhật" />
+        <MovieGrid
+          movies={latestMovies}
+          title="Phim Mới Cập Nhật"
+          id="phim-moi-cap-nhat"
+        />
+        {pagination && (
+          <Pagination pagination={pagination} baseUrl="/#phim-moi-cap-nhat" />
+        )}
       </div>
     </div>
   );
