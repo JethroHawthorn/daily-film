@@ -2,11 +2,12 @@ import { getMoviesByCategory } from "@/lib/ophim";
 import { Metadata } from "next";
 import MovieGrid from "@/components/movie/MovieGrid";
 import Pagination from "@/components/shared/Pagination";
-import { parsePageParam } from "@/lib/utils";
+import { parsePageParam, parseSortParam, sortMovies } from "@/lib/utils";
+import ListingToolbar from "@/components/shared/ListingToolbar";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; sort?: string }>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -29,9 +30,11 @@ export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams;
   const { slug } = params;
   const page = parsePageParam(searchParams.page);
+  const sort = parseSortParam(searchParams.sort);
   const title = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
   const { items, pagination } = await getMoviesByCategory(slug, page);
+  const sortedItems = sortMovies(items, sort);
 
   return (
     <div className="container py-8">
@@ -43,13 +46,15 @@ export default async function CategoryPage(props: Props) {
         </p>
       )}
 
+      <ListingToolbar pathname={`/the-loai/${slug}`} sort={sort} />
+
       {items.length > 0 ? (
         <>
-          <MovieGrid movies={items} />
+          <MovieGrid movies={sortedItems} />
           {pagination && (
             <Pagination
               pagination={pagination}
-              baseUrl={`/the-loai/${slug}`}
+              baseUrl={`/the-loai/${slug}${sort === "latest" ? "" : `?sort=${sort}`}`}
             />
           )}
         </>

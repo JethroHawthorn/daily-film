@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static routes
   const routes = [
     '',
+    '/kham-pha',
     '/tim-kiem',
   ].map((route) => ({
     url: `${baseUrl}${route}`,

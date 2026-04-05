@@ -9,16 +9,19 @@ import { ArrowRight } from "lucide-react";
 import RemoteImage from "@/components/shared/RemoteImage";
 import MovieGrid from "@/components/movie/MovieGrid";
 import Pagination from "@/components/shared/Pagination";
-import { parsePageParam } from "@/lib/utils";
+import { parsePageParam, parseSortParam, sortMovies } from "@/lib/utils";
+import ListingToolbar from "@/components/shared/ListingToolbar";
 
 interface Props {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; sort?: string }>;
 }
 
 export default async function Home(props: Props) {
   const searchParams = await props.searchParams;
   const page = parsePageParam(searchParams.page);
+  const sort = parseSortParam(searchParams.sort);
   const { items: latestMovies, pagination } = await getLatestMovies(page);
+  const sortedLatestMovies = sortMovies(latestMovies, sort);
 
   // Featured movie (first one)
   const featured = latestMovies?.[0];
@@ -68,13 +71,17 @@ export default async function Home(props: Props) {
         <ContinueWatching />
         <TrendingSection />
         <TopRatedSection />
+        <ListingToolbar pathname="/" sort={sort} sectionId="phim-moi-cap-nhat" />
         <MovieGrid
-          movies={latestMovies}
+          movies={sortedLatestMovies}
           title="Phim Mới Cập Nhật"
           id="phim-moi-cap-nhat"
         />
         {pagination && (
-          <Pagination pagination={pagination} baseUrl="/#phim-moi-cap-nhat" />
+          <Pagination
+            pagination={pagination}
+            baseUrl={`/${sort === "latest" ? "" : `?sort=${sort}`}#phim-moi-cap-nhat`}
+          />
         )}
       </div>
     </div>

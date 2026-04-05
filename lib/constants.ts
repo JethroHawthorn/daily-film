@@ -129,3 +129,19 @@ export const COUNTRY_LABELS: Record<CountrySlug, string> = {
   singapore: "Singapore",
   "quoc-gia-khac": "Quốc Gia Khác",
 };
+
+export const LISTING_SORT_OPTIONS = [
+  { value: "latest", label: "Mới cập nhật" },
+  { value: "year-desc", label: "Năm mới nhất" },
+  { value: "year-asc", label: "Năm cũ nhất" },
+  { value: "az", label: "A-Z" },
+  { value: "za", label: "Z-A" },
+] as const;
+
+export type ListingSortValue = (typeof LISTING_SORT_OPTIONS)[number]["value"];
+
+export function isValidListingSortValue(
+  value: string,
+): value is ListingSortValue {
+  return LISTING_SORT_OPTIONS.some((option) => option.value === value);
+}
