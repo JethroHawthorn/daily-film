@@ -61,11 +61,17 @@ Follow these steps to run the project locally.
     ```env
     TURSO_DATABASE_URL="libsql://your-db-url.turso.io"
     TURSO_TOKEN="your-turso-token"
+    ADMIN_FEEDBACK_PASSWORD="set-a-strong-password"
     NEXT_PUBLIC_OPHIM_BASE_URL=""
     NEXT_PUBLIC_OPHIM_IMAGE_URL=""
     ```
 
-4.  **Run Development Server**:
+5.  **Initialize Database Tables**:
+    ```bash
+    node scripts/setup_feedback_db.js
+    ```
+
+6.  **Run Development Server**:
     ```bash
     npm run dev
     ```
@@ -79,6 +85,12 @@ Follow these steps to run the project locally.
 - `lib/`: Utilities, Database client, and API helpers.
 - `types/`: TypeScript definitions for Movies and API responses.
 - `actions/`: Server Actions for data mutations (History, Pagination).
+
+## Feedback Inbox
+
+- Users can submit website feedback from the homepage.
+- Admin can review feedback at `/admin/feedback`.
+- Access is protected by `ADMIN_FEEDBACK_PASSWORD`.
 
 ## 🤝 Contributing
 

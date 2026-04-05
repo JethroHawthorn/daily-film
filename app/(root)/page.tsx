@@ -1,6 +1,7 @@
 import { getLatestMovies, OPHIM_IMAGE_URL } from "@/lib/ophim";
 
 import ContinueWatching from "@/components/home/ContinueWatching";
+import FeedbackSection from "@/components/feedback/FeedbackSection";
 import TrendingSection from "@/components/home/TrendingSection";
 import TopRatedSection from "@/components/home/TopRatedSection";
 import { Button } from "@/components/ui/button";
@@ -83,6 +84,7 @@ export default async function Home(props: Props) {
             baseUrl={`/${sort === "latest" ? "" : `?sort=${sort}`}#phim-moi-cap-nhat`}
           />
         )}
+        <FeedbackSection />
       </div>
     </div>
   );
