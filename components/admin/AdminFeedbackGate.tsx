@@ -13,7 +13,7 @@ function LoginButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" className="w-full" disabled={pending}>
+    <Button type="submit" className="w-full sm:flex-1" disabled={pending}>
       {pending ? (
         <>
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -61,7 +61,7 @@ export default function AdminFeedbackGate() {
           ) : null}
 
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Button asChild variant="outline" className="w-full">
+            <Button asChild variant="outline" className="w-full sm:flex-1">
               <Link href="/">Quay lại trang phim</Link>
             </Button>
             <LoginButton />
