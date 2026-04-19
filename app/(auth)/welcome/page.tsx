@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,15 +11,22 @@ export default function WelcomePage() {
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [hydrated, setHydrated] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setHydrated(true);
-    // Check if already has username
-    const stored = localStorage.getItem("username");
+    const stored = window.localStorage.getItem("username");
     if (stored) {
-      router.push("/");
+      router.replace("/");
+      return;
     }
+
+    // Mobile PWAs can be finicky with taps during initial layout.
+    // Deferring the focus avoids racing the first paint and viewport resize.
+    const timeoutId = window.setTimeout(() => {
+      inputRef.current?.focus();
+    }, 150);
+
+    return () => window.clearTimeout(timeoutId);
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,11 +50,9 @@ export default function WelcomePage() {
     }
   };
 
-  if (!hydrated) return null; // Avoid hydration mismatch
-
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
-      <div className="w-full max-w-md space-y-8 text-center">
+    <div className="flex min-h-dvh flex-col bg-background px-4 py-8 sm:justify-center">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center space-y-8 text-center">
         <h1 className="text-4xl font-bold tracking-tight">Chào mừng đến với Daily&nbsp;Film</h1>
         <p className="text-muted-foreground">
           Đặt tên để bắt đầu theo dõi lịch sử xem, phim yêu thích và đang theo dõi.
@@ -57,12 +62,17 @@ export default function WelcomePage() {
           <div className="space-y-2">
             <label htmlFor="username" className="text-sm font-medium">Tên người dùng</label>
             <Input
+              ref={inputRef}
               id="username"
               placeholder="Ví dụ: jethro_yeuphim"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               minLength={3}
               maxLength={20}
+              autoComplete="nickname"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               required
             />
             {error && <p className="text-sm text-destructive">{error}</p>}
