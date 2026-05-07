@@ -1,6 +1,6 @@
 import { getTopRatedMovies } from "@/app/actions/ratings";
 import Link from "next/link";
-import { OPHIM_IMAGE_URL } from "@/lib/ophim";
+import { resolveOphimImageUrl } from "@/lib/ophim";
 import { Star } from "lucide-react";
 import RemoteImage from "@/components/shared/RemoteImage";
 
@@ -27,11 +27,7 @@ export default async function TopRatedSection() {
             >
               <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-muted mb-3">
                 <RemoteImage
-                  src={
-                    item.movieData.poster_url.startsWith("http")
-                      ? item.movieData.poster_url
-                      : `${OPHIM_IMAGE_URL}/${item.movieData.poster_url}`
-                  }
+                  src={resolveOphimImageUrl(item.movieData.poster_url)}
                   alt={item.movieData.name}
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"

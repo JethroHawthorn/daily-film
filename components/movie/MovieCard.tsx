@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PlayCircle } from "lucide-react";
 import { Movie } from "@/types/movie";
-import { OPHIM_IMAGE_URL } from "@/lib/ophim";
+import { resolveOphimImageUrl } from "@/lib/ophim";
 import RemoteImage from "@/components/shared/RemoteImage";
 
 
@@ -12,14 +12,7 @@ interface MovieCardProps {
 }
 
 export default function MovieCard({ movie }: MovieCardProps) {
-  // Construct image URLs. API usually gives paths, need to prepend domain.
-  // Sometimes API gives full URL. Let's check API response again.
-  // Sample: "thumb_url": "tham-kich-gau-nau-thumb.jpg", "poster_url": "tham-kich-gau-nau-poster.jpg"
-  // Needs base URL.
-
-  const thumbUrl = (movie.thumb_url || "").startsWith('http')
-    ? movie.thumb_url
-    : `${OPHIM_IMAGE_URL}/${movie.thumb_url}`;
+  const thumbUrl = resolveOphimImageUrl(movie.thumb_url);
 
   return (
     <Link href={`/phim/${movie.slug}`}>

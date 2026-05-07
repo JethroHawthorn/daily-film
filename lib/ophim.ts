@@ -2,7 +2,42 @@ import { Movie, MovieDetail } from "@/types/movie";
 import { fetchWithRetry } from "./fetch-utils";
 
 export const OPHIM_BASE_URL = process.env.NEXT_PUBLIC_OPHIM_BASE_URL;
-export const OPHIM_IMAGE_URL = process.env.NEXT_PUBLIC_OPHIM_IMAGE_URL;
+const DEFAULT_OPHIM_IMAGE_URL = "https://img.ophim.live/uploads/movies";
+
+function normalizeOphimImageBase(url?: string | null) {
+  if (!url) return DEFAULT_OPHIM_IMAGE_URL;
+
+  const trimmedUrl = url.trim().replace(/\/+$/, "");
+
+  if (
+    trimmedUrl.includes("img.ophim1.com") ||
+    trimmedUrl.includes("img.ophim18.cc")
+  ) {
+    return DEFAULT_OPHIM_IMAGE_URL;
+  }
+
+  return trimmedUrl;
+}
+
+export const OPHIM_IMAGE_URL = normalizeOphimImageBase(
+  process.env.NEXT_PUBLIC_OPHIM_IMAGE_URL,
+);
+
+export function resolveOphimImageUrl(
+  path?: string | null,
+  imageBase = OPHIM_IMAGE_URL,
+) {
+  if (!path) return "";
+
+  const trimmedPath = path.trim();
+
+  if (!trimmedPath) return "";
+  if (trimmedPath.startsWith("http://") || trimmedPath.startsWith("https://")) {
+    return trimmedPath;
+  }
+
+  return `${normalizeOphimImageBase(imageBase)}/${trimmedPath.replace(/^\/+/, "")}`;
+}
 
 // Re-export constants
 export const MOVIE_LIST_REVALIDATE = 60; // 1 minute

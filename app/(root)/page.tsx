@@ -1,4 +1,4 @@
-import { getLatestMovies, OPHIM_IMAGE_URL } from "@/lib/ophim";
+import { getLatestMovies, resolveOphimImageUrl } from "@/lib/ophim";
 
 import ContinueWatching from "@/components/home/ContinueWatching";
 import FeedbackSection from "@/components/feedback/FeedbackSection";
@@ -33,11 +33,7 @@ export default async function Home(props: Props) {
       {featured && (
         <section className="relative h-[50vh] w-full overflow-hidden sm:h-[60vh] md:h-[70vh]">
           <RemoteImage
-            src={
-              featured.poster_url?.startsWith("http")
-                ? featured.poster_url
-                : `${OPHIM_IMAGE_URL}/${featured.poster_url}`
-            }
+            src={resolveOphimImageUrl(featured.poster_url)}
             alt={featured.name}
             fill
             priority

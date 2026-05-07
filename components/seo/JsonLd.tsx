@@ -1,14 +1,12 @@
 import { MovieDetail } from "@/types/movie";
-import { OPHIM_IMAGE_URL } from "@/lib/ophim";
+import { resolveOphimImageUrl } from "@/lib/ophim";
 
 interface JsonLdProps {
   movie: MovieDetail;
 }
 
 export default function JsonLd({ movie }: JsonLdProps) {
-  const posterUrl = movie.poster_url.startsWith('http')
-    ? movie.poster_url
-    : `${OPHIM_IMAGE_URL}/${movie.poster_url}`;
+  const posterUrl = resolveOphimImageUrl(movie.poster_url);
 
   const schema = {
     "@context": "https://schema.org",
